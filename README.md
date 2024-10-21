@@ -1,2 +1,2 @@
 # PSAM
-Repozytowium poświęcone aplikacji na zajęcia PSAM
+Repozytowium poświęcone aplikacji-forum na zajęcia PSAM
