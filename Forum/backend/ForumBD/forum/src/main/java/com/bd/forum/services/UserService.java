@@ -24,6 +24,11 @@ public class UserService {
         return userRepository.findById(userId);
     }
 
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found."));
+    }
+
     // Metoda do zapisywania nowego użytkownika
     public User saveUser(User user) {
         return userRepository.save(user);
