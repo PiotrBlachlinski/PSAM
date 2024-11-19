@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Service
 public class UserService {
@@ -40,11 +39,9 @@ public class UserService {
         userRepository.deleteById(userId);
     }
     
-    private final BCryptPasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     public User registerUser(String username, String email, String password) {
@@ -56,32 +53,27 @@ public class UserService {
             throw new IllegalArgumentException("Email already registered.");
         }
 
-        // Szyfrowanie hasła
-        String encodedPassword = passwordEncoder.encode(password);
-
-        // Tworzenie nowego użytkownika
+        // Zapisz hasło bez szyfrowania
         User newUser = new User();
         newUser.setUsername(username);
         newUser.setEmail(email);
-        newUser.setPasswordHash(encodedPassword);
-        newUser.setReputation(0); // Domyślna wartość
+        newUser.setPasswordHash(password); 
+        newUser.setRole("USER");
+        newUser.setReputation(0);
         newUser.setCreatedAt(LocalDateTime.now());
 
         return userRepository.save(newUser);
     }
 
     public String loginUser(String email, String password) {
-        // Znajdź użytkownika po emailu
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid email or password."));
-
-        // Sprawdź poprawność hasła
-        if (!passwordEncoder.matches(password, user.getPasswordHash())) {
+    
+        // Porównaj hasło bez szyfrowania
+        if (!password.equals(user.getPasswordHash())) {
             throw new IllegalArgumentException("Invalid email or password.");
         }
-
-        // Wygeneruj prosty token (opcjonalnie)
-        // W bardziej zaawansowanej wersji można użyć JWT
+    
         return "Login successful for user: " + user.getUsername();
     }
 }
