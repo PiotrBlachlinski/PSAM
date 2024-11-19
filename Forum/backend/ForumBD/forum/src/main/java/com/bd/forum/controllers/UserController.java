@@ -2,6 +2,9 @@ package com.bd.forum.controllers;
 
 import com.bd.forum.entities.User;
 import com.bd.forum.services.UserService;
+
+import jakarta.servlet.http.HttpSession;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -79,15 +82,37 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody Map<String, String> request) {
+    public ResponseEntity<String> loginUser(@RequestBody Map<String, String> request, HttpSession session) {
         String email = request.get("email");
         String password = request.get("password");
 
         try {
             String response = userService.loginUser(email, password);
+
+            // Dodanie użytkownika do sesji
+            User user = userService.getUserByEmail(email);
+            session.setAttribute("user", user); // Przechowuj obiekt User w sesji
+
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
+        
+    }
+
+    @GetMapping("/current")
+    public ResponseEntity<User> getCurrentUser(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user != null) {
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpSession session) {
+        session.invalidate(); // Usunięcie sesji
+        return ResponseEntity.ok("Logged out successfully.");
     }
 }
