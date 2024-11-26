@@ -18,9 +18,13 @@ export default function RegisterPage() {
 
                     {/* Repeat password input */}
                  <input type="password" placeholder="Powtórz hasło"/>
+                    
+                    {/* Register button, adds user to the database */}
                 <button className="primary">Zarejestruj się</button>
 
                 <div className="text-center py-2 text-gray-500">
+
+                    {/* Link to login page */}
                 Masz już konto? <Link className="underline text-black" to={'/login'}>Zaloguj się</Link>
                 </div>
 
