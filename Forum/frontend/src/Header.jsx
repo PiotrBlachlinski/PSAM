@@ -189,7 +189,7 @@ export default function Header() {
                 d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
               />
             </svg>
-            <span>Account</span>
+            <span>Konto</span>
           </div>
           {isAccountMenuOpen && (
             <div className="absolute left-0 top-full mt flex flex-col bg-white border border-gray-200 shadow-lg rounded-md w-48 z-10">
@@ -242,7 +242,7 @@ export default function Header() {
                 to="/profile"
                 className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
               >
-                View Profile
+                Profil użytkownika
               </Link>
               <Link
                 to="/modView"
@@ -254,7 +254,7 @@ export default function Header() {
                 to="/logout"
                 className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
               >
-                Logout
+                Wyloguj
               </Link>
             </div>
           )}
