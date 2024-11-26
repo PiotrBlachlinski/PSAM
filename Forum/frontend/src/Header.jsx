@@ -90,8 +90,9 @@ export default function Header() {
             >
               Creator Name
             </div>
-            <div
-              onClick={() => handleSearchOptionChange('Tags')}
+            {/* jeżeli nie obsługujemy tagów to do usunięcia */}
+            <div 
+              onClick={() => handleSearchOptionChange('Tags')}  
               className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${
                 searchOption === 'Tags' ? 'font-bold' : ''
               }`}
@@ -251,7 +252,7 @@ export default function Header() {
                 Widok moderatora
               </Link>
               <Link
-                to="/logout"
+                to="/IndexPage"
                 className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
               >
                 Logout
