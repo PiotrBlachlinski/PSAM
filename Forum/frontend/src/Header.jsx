@@ -8,7 +8,7 @@ export default function Header() {
   const [isAccountMenuOpen, setAccountMenuOpen] = useState(false);
   const [isProfileMenuOpen, setProfileMenuOpen] = useState(false);
   const [isSearchOptionsOpen, setSearchOptionsOpen] = useState(false);
-  const [searchOption, setSearchOption] = useState('Post Name');
+  const [searchOption, setSearchOption] = useState('Tytułu');
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
@@ -75,29 +75,28 @@ export default function Header() {
         {isSearchOptionsOpen && (
           <div className="absolute left-0 top-full mt-1 bg-white border border-gray-300 shadow-md rounded-md z-10">
             <div
-              onClick={() => handleSearchOptionChange('Post Name')}
+              onClick={() => handleSearchOptionChange('Tytule')}
               className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${
-                searchOption === 'Post Name' ? 'font-bold' : ''
+                searchOption === 'Tytule' ? 'font-bold' : ''
               }`}
             >
-              Post Name
+              Tytule
             </div>
             <div
-              onClick={() => handleSearchOptionChange('Creator Name')}
+              onClick={() => handleSearchOptionChange('Nazwie użytkownika')}
               className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${
-                searchOption === 'Creator Name' ? 'font-bold' : ''
+                searchOption === 'Nazwie użytkownika' ? 'font-bold' : ''
               }`}
             >
-              Creator Name
+              Nazwie użytkownika
             </div>
-            {/* jeżeli nie obsługujemy tagów to do usunięcia */}
-            <div 
-              onClick={() => handleSearchOptionChange('Tags')}  
+            <div
+              onClick={() => handleSearchOptionChange('Tagach')}
               className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${
-                searchOption === 'Tags' ? 'font-bold' : ''
+                searchOption === 'Tagach' ? 'font-bold' : ''
               }`}
             >
-              Tags
+              Tagach
             </div>
           </div>
         )}
@@ -108,7 +107,7 @@ export default function Header() {
             type="text-sm"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={`Search by ${searchOption}`}
+            placeholder={`Wyszukaj po ${searchOption}`}
             className="flex-grow border-none focus:outline-none text-sm px-2"
             onFocus={handleFocus} // Open search options on input focus
             onBlur={handleBlur} // Close search options after a small delay
@@ -129,7 +128,7 @@ export default function Header() {
               />
             </svg>
             <span className="absolute left-auto -translate-x-1/2 translate-y-[40px] bottom-0 mb-2 px-2 py-1 text-sm text-white bg-black rounded opacity-0 group-hover:opacity-100 transition-opacity">
-              Search
+              Wyszukaj
             </span>
           </button>
         </div>
@@ -252,7 +251,7 @@ export default function Header() {
                 Widok moderatora
               </Link>
               <Link
-                to="/IndexPage"
+                to="/logout"
                 className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
               >
                 Logout
