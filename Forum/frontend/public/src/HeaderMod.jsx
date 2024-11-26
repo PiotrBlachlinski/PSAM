@@ -139,7 +139,7 @@ export default function Header() {
           profileAnimate ? 'visible' : ''
         }`}
       >
-        <Link to="/postAdd" className="relative group flex items-center gap-1 cursor-pointer">
+        <Link to="/postAdd" className="relative group">
           {/* Przycisk nowego posta */}
           <div>
           <svg
@@ -234,8 +234,6 @@ export default function Header() {
             </svg>
             <span>Profil</span>
           </div>
-
-          {/* Zależnie od tego czy zalogowany jest moderator czy zwykłu użytkownik, wyświetlać określone przyciski */}
           {isProfileMenuOpen && (
             <div className="absolute right-0 top-full mt flex flex-col bg-white border border-gray-200 shadow-lg rounded-md w-48 z-10">
               <Link
@@ -243,12 +241,6 @@ export default function Header() {
                 className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
               >
                 View Profile
-              </Link>
-              <Link
-                to="/modView"
-                className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-              >
-                Widok moderatora
               </Link>
               <Link
                 to="/logout"
