@@ -9,7 +9,7 @@ export default function PostAdd() {
             <h2 class="text-base/7 font-semibold text-gray-900">Utwórz nowy wpis</h2>
 
 
-            {/* Pole tytułu posta */}
+            {/* Post title input */}
             <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
               <div class="sm:col-span-4">
                 <label for="username" class="block text-sm/6 font-medium text-gray-900">Tytuł wpisu</label>
@@ -20,15 +20,15 @@ export default function PostAdd() {
               </div>
 
 
-            {/* Pole treści posta */}
+            {/* Post content input */}
               <div class="col-span-full">
                 <label for="contents" class="block text-sm/6 font-medium text-gray-900">Treść</label>
                 <div class="mt-2">
-                    
                   <textarea id="contents" name="contents" rows="3" class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 " ></textarea>
                 </div>
               </div>
 
+                {/* Post picture */}
               <div class="col-span-full">
                 <label for="cover-photo" class="block text-sm/6 font-medium text-gray-900">Zdjęcie (opcjonalne)</label>
                 <div class="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
@@ -54,7 +54,10 @@ export default function PostAdd() {
         </div>
 
         <div class="mt-6 flex items-center justify-end gap-x-6">
+            {/* Cancel button, links back to main page */}
             <Link to="/" className="relative group text-sm/6 font-semibold text-gray-900">Cancel</Link>
+
+            {/* Save button, saves post to database */}
             <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
         </div>
      
