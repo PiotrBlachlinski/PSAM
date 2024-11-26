@@ -13,10 +13,12 @@ export default function LoginPage() {
                     {/* Password input*/}
                  <input type="password" placeholder="Hasło"/>
                  
-                 {/* Stworzyć przekierowanie, zależnie od tego czy zalogowany został użytkownik lub moderator */}
+                {/* Login button */}
+                {/* Requires adding redirection, depending on whether person logs in as user or moderator */}
                 <button className="primary">Login</button> 
 
                 <div className="text-center py-2 text-gray-500">
+                {/* Link redirecting to register page */}
                 Nie masz konta? <Link className="underline text-black" to={'/register'}>Zarejestruj się</Link>
                 </div>
 
