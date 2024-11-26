@@ -37,9 +37,14 @@ const UserProfile = () => {
                   alt={`${user.name} profile`}
                   className="w-24 h-24 rounded-full object-cover"
                 />
-                <div className="absolute inset-0 flex items-center justify-center text-white text-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                  Change icon
-                </div>
+                <button
+                  className="absolute inset-0 flex items-center justify-center text-white text-sm rounded transition-opacity opacity-0 group-hover:opacity-100"
+                  onClick={() => {
+                    console.log("Change icon button clicked!"); // Placeholder for connection
+                    }}
+                >
+                  Change Icon
+                </button>
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-black">{user.name}</h1>
