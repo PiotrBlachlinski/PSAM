@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -106,6 +107,7 @@ public class UserController {
         if (user != null) {
             return ResponseEntity.ok(user);
         } else {
+            System.out.println("Nie znaleziono użytkownika w sesji");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
@@ -114,5 +116,38 @@ public class UserController {
     public ResponseEntity<String> logout(HttpSession session) {
         session.invalidate(); // Usunięcie sesji
         return ResponseEntity.ok("Logged out successfully.");
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<User> updateUser(@RequestParam("username") String username,
+                                        @RequestParam("description") String description,
+                                        @RequestParam(value = "profilePic", required = false) MultipartFile profilePic,
+                                        @RequestParam(value = "background", required = false) MultipartFile background,
+                                        HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        try {
+            userService.updateUserProfile(user, username, description, profilePic, background);
+            session.setAttribute("user", user); // Zaktualizuj dane użytkownika w sesji
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @PostMapping("/{id}/role")
+    public ResponseEntity<User> updateUserRole(@PathVariable int id, @RequestParam String role) {
+        Optional<User> existingUserOptional = userService.getUserById(id);
+        if (existingUserOptional.isPresent()) {
+            User existingUser = existingUserOptional.get();
+            existingUser.setRole(role); // Ustawienie nowej roli
+            User updatedUser = userService.updateUser(existingUser);
+            return ResponseEntity.ok(updatedUser);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

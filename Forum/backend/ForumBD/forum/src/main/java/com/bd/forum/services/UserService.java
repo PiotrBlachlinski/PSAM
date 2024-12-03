@@ -3,7 +3,9 @@ package com.bd.forum.services;
 import com.bd.forum.entities.User;
 import com.bd.forum.repositories.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -80,5 +82,17 @@ public class UserService {
         }
     
         return "Login successful for user: " + user.getUsername();
+    }
+
+    public void updateUserProfile(User user, String username, String description, MultipartFile profilePic, MultipartFile background) throws IOException {
+        user.setUsername(username);
+        user.setDescription(description);
+        if (profilePic != null && !profilePic.isEmpty()) {
+            user.setProfilePic(profilePic.getBytes());
+        }
+        if (background != null && !background.isEmpty()) {
+            user.setBackground(background.getBytes());
+        }
+        userRepository.save(user);
     }
 }

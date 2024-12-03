@@ -29,6 +29,17 @@ public class User {
     @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
 
+    @Column(length = 255)
+    private String description;
+
+    @Lob
+    @Column
+    private byte[] profilePic;
+
+    @Lob
+    @Column
+    private byte[] background;
+
     // Getters and setters
 
     public int getUserId() {
@@ -85,5 +96,29 @@ public class User {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public byte[] getProfilePic() {
+        return profilePic;
+    }
+
+    public void setProfilePic(byte[] profilePic) {
+        this.profilePic = profilePic;
+    }
+
+    public byte[] getBackground() {
+        return background;
+    }
+
+    public void setBackground(byte[] background) {
+        this.background = background;
     }
 }

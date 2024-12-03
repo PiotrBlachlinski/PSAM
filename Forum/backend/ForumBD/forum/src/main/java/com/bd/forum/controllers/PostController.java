@@ -5,7 +5,9 @@ import com.bd.forum.services.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,39 +18,45 @@ public class PostController {
     @Autowired
     private PostService postService;
 
-    // Endpoint do pobierania wszystkich postów
+    // Endpoint to get all posts
     @GetMapping
     public List<Post> getAllPosts() {
         return postService.getAllPosts();
     }
 
-    // Endpoint do pobierania postu po ID
+    // Endpoint to get a post by ID
     @GetMapping("/{id}")
     public ResponseEntity<Post> getPostById(@PathVariable int id) {
         Optional<Post> post = postService.getPostById(id);
         return post.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Endpoint do tworzenia nowego postu
+    // Endpoint to create a new post
     @PostMapping
-    public Post createPost(@RequestBody Post post) {
-        return postService.savePost(post);
+    public Post createPost(
+            @RequestParam("userId") int userId,
+            @RequestParam("categoryId") int categoryId,
+            @RequestParam("content") String content,
+            @RequestParam(value = "image", required = false) MultipartFile image) throws IOException {
+        return postService.savePost(userId, categoryId, content, image);
     }
 
-    // Endpoint do aktualizacji postu
+    // Endpoint to update a post
     @PutMapping("/{id}")
-    public ResponseEntity<Post> updatePost(@PathVariable int id, @RequestBody Post postDetails) {
+    public ResponseEntity<Post> updatePost(
+            @PathVariable int id,
+            @RequestParam("content") String content,
+            @RequestParam(value = "image", required = false) MultipartFile image) throws IOException {
         Optional<Post> existingPost = postService.getPostById(id);
         if (existingPost.isPresent()) {
-            postDetails.setPostId(id);
-            Post updatedPost = postService.updatePost(postDetails);
+            Post updatedPost = postService.updatePost(existingPost.get(), content, image);
             return ResponseEntity.ok(updatedPost);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
-    // Endpoint do usuwania postu po ID
+    // Endpoint to delete a post by ID
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePost(@PathVariable int id) {
         if (postService.getPostById(id).isPresent()) {

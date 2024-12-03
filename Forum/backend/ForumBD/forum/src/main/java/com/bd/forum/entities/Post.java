@@ -12,16 +12,20 @@ public class Post {
     private int postId;
 
     @ManyToOne
-    @JoinColumn(name = "thread_id", nullable = false)
-    private Thread thread;
-
-    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
 
     @Lob
     @Column(nullable = false)
     private String content;
+
+    @Lob
+    @Column
+    private byte[] image;
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
@@ -45,20 +49,20 @@ public class Post {
         this.postId = postId;
     }
 
-    public Thread getThread() {
-        return thread;
-    }
-
-    public void setThread(Thread thread) {
-        this.thread = thread;
-    }
-
     public User getUser() {
         return user;
     }
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     public String getContent() {
@@ -99,5 +103,13 @@ public class Post {
 
     public void setDislikes(int dislikes) {
         this.dislikes = dislikes;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 }
