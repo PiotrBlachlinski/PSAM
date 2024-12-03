@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import './Header.css';
 
 export default function Header() {
@@ -8,37 +8,13 @@ export default function Header() {
   const [isAccountMenuOpen, setAccountMenuOpen] = useState(false);
   const [isProfileMenuOpen, setProfileMenuOpen] = useState(false);
   const [isSearchOptionsOpen, setSearchOptionsOpen] = useState(false);
-  const [searchOption, setSearchOption] = useState('Tytułu');
+  const [searchOption, setSearchOption] = useState('Post Name');
   const [searchQuery, setSearchQuery] = useState('');
-  const [user, setUser] = useState(null);
-  const navigate = useNavigate();
-
-  // Sprawdzenie, czy użytkownik jest zalogowany
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const response = await fetch("http://localhost:8080/api/users/current", {
-          credentials: "include",
-        });
-        if (response.ok) {
-          const userData = await response.json();
-          setUser(userData);
-        } else {
-          setUser(null);
-        }
-      } catch (error) {
-        console.error("Błąd podczas sprawdzania użytkownika:", error);
-        setUser(null);
-      }
-    };
-
-    fetchUser();
-  }, []);
 
   useEffect(() => {
-    setAnimate(true); // Animacja tekstu "Forum"
+    setAnimate(true); // Trigger "Forum" text animation
     const timer = setTimeout(() => {
-      setProfileAnimate(true); // Opóźniona animacja sekcji profilu
+      setProfileAnimate(true); // Delay profile section animation slightly
     }, 500);
 
     return () => clearTimeout(timer);
@@ -58,39 +34,19 @@ export default function Header() {
   };
 
   const handleFocus = () => {
-    setSearchOptionsOpen(true); // Otwiera opcje wyszukiwania przy skupieniu
+    setSearchOptionsOpen(true); // Open search options on input focus
   };
 
   const handleBlur = () => {
     setTimeout(() => {
-      setSearchOptionsOpen(false); // Zamknij opcje wyszukiwania po krótkim czasie
+      setSearchOptionsOpen(false); // Close search options after a short delay
     }, 200);
-  };
-
-  const handleLogout = () => {
-    // Wylogowanie użytkownika i usunięcie sesji
-    fetch("http://localhost:8080/api/users/logout", {
-      method: "POST",
-      credentials: "include",
-    })
-      .then((response) => {
-        if (response.ok) {
-          setUser(null);
-          navigate("/"); // Przekierowanie na stronę główną
-        }
-      })
-      .catch((error) => {
-        console.error("Błąd podczas wylogowywania:", error);
-      });
   };
 
   return (
     <header className="flex justify-between">
       {/* Logo Section */}
-      <Link
-        to={user && (user.role === 'ADMIN' || user.role === 'MOD') ? "/modView" : "/"}
-        className="flex items-center gap-1 relative group"
-      >
+      <Link to="/" className="flex items-center gap-1 relative group">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -115,43 +71,46 @@ export default function Header() {
 
       {/* Search Bar */}
       <div className="relative flex items-center gap-3">
+        {/* Dropdown Menu */}
         {isSearchOptionsOpen && (
-          <div className="absolute left-0 top-full mt-1 bg-white border border-gray-300 rounded-md z-10">
+          <div className="absolute left-0 top-full mt-1 bg-white border border-gray-300 shadow-md rounded-md z-10">
             <div
-              onClick={() => handleSearchOptionChange('Tytułu')}
+              onClick={() => handleSearchOptionChange('Post Name')}
               className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${
-                searchOption === 'Tytułu' ? 'font-bold' : ''
+                searchOption === 'Post Name' ? 'font-bold' : ''
               }`}
             >
-              Tytułu
+              Post Name
             </div>
             <div
-              onClick={() => handleSearchOptionChange('Nazwie użytkownika')}
+              onClick={() => handleSearchOptionChange('Creator Name')}
               className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${
-                searchOption === 'Nazwie użytkownika' ? 'font-bold' : ''
+                searchOption === 'Creator Name' ? 'font-bold' : ''
               }`}
             >
-              Nazwie użytkownika
+              Creator Name
             </div>
             <div
-              onClick={() => handleSearchOptionChange('Tagach')}
+              onClick={() => handleSearchOptionChange('Tags')}
               className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${
-                searchOption === 'Tagach' ? 'font-bold' : ''
+                searchOption === 'Tags' ? 'font-bold' : ''
               }`}
             >
-              Tagach
+              Tags
             </div>
           </div>
         )}
-        <div className="relative flex-grow flex items-center border border-gray-300 rounded-full p-1">
+
+        {/* Search Input */}
+        <div className="relative flex-grow flex items-center border border-gray-300 rounded-full p-3">
           <input
-            type="text"
+            type="text-sm"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={`Wyszukaj po ${searchOption}`}
+            placeholder={`Search by ${searchOption}`}
             className="flex-grow border-none focus:outline-none text-sm px-2"
-            onFocus={handleFocus}
-            onBlur={handleBlur}
+            onFocus={handleFocus} // Open search options on input focus
+            onBlur={handleBlur} // Close search options after a small delay
           />
           <button className="relative group">
             <svg
@@ -169,49 +128,44 @@ export default function Header() {
               />
             </svg>
             <span className="absolute left-auto -translate-x-1/2 translate-y-[40px] bottom-0 mb-2 px-2 py-1 text-sm text-white bg-black rounded opacity-0 group-hover:opacity-100 transition-opacity">
-              Wyszukaj
+              Search
             </span>
           </button>
         </div>
       </div>
-
-      {/* Profile Section */}
-      <div
+{/* Przejście do tworzenia nowego wpisu*/}
+<div
         className={`flex gap-2 border border-grey-300 rounded-full py-2 px-4 shadow-md shadow-gray-300 slide-in ${
           profileAnimate ? 'visible' : ''
         }`}
       >
-        <Link
-          to={user ? "/postAdd" : "/login"}
-          className="relative group flex items-center gap-1 cursor-pointer"
-        >
+        <Link to="/postAdd" className="relative group">
           {/* Przycisk nowego posta */}
           <div>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="size-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-              />
-            </svg>
+          <svg
+           xmlns="http://www.w3.org/2000/svg"
+           fill="none" 
+           viewBox="0 0 24 24" 
+           strokeWidth={1.5} 
+           stroke="currentColor" 
+           className="size-6">
 
-            <span className="fixed left-auto -translate-x-1/2 translate-y-full bottom-0 mb-2 px-2 py-1 text-sm text-white bg-black rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-              Nowy post
-            </span>
+          <path 
+          strokeLinecap="round" 
+          strokeLinejoin="round" 
+          d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+          </svg>
+          
+          <span className="fixed left-auto -translate-x-1/2 translate-y-full bottom-0 mb-2 px-2 py-1 text-sm text-white bg-black rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+            Nowy post
+          </span>
           </div>
+          
         </Link>
       </div>
-
       {/* Profile Section */}
       <div
-        className={`flex gap-2 border border-gray-300 rounded-full py-1 px-2 ${
+        className={`flex gap-2 border border-grey-300 rounded-full py-2 px-4 shadow-md shadow-gray-300 slide-in ${
           profileAnimate ? 'visible' : ''
         }`}
       >
@@ -228,44 +182,34 @@ export default function Header() {
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="size-6"
-            >
+              className="size-6">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
               />
             </svg>
-            {user ? <span>{user.username}</span> : <span>Konto</span>}
+            <span>Account</span>
           </div>
           {isAccountMenuOpen && (
-            <div className="absolute left-0 top-full mt flex flex-col bg-white border border-gray-200 rounded-md w-48 z-10">
-              {user ? (
-                <button
-                  onClick={handleLogout}
-                  className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                >
-                  Wyloguj
-                </button>
-              ) : (
-                <>
-                  <Link
-                    to="/register"
-                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                  >
-                    Rejestracja
-                  </Link>
-                  <Link
-                    to="/login"
-                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                  >
-                    Logowanie
-                  </Link>
-                </>
-              )}
+            <div className="absolute left-0 top-full mt flex flex-col bg-white border border-gray-200 shadow-lg rounded-md w-48 z-10">
+              <Link
+                to="/register"
+                className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+              >
+                Rejestracja
+              </Link>
+              <Link
+                to="/login"
+                className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+              >
+                Logowanie
+              </Link>
             </div>
           )}
         </div>
+
+        <div className="border-l border-gray-300"></div>
 
         {/* Profile Dropdown */}
         <div
@@ -291,21 +235,19 @@ export default function Header() {
             <span>Profil</span>
           </div>
           {isProfileMenuOpen && (
-            <div className="absolute right-0 top-full mt flex flex-col bg-white border border-gray-200 rounded-md w-48 z-10">
-              {user ? (
-                <>
-                  <Link
-                    to={user.role === 'ADMIN' ? "/admin" : "/profile"}
-                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                  >
-                    Profil użytkownika
-                  </Link>
-                </>
-              ) : (
-                <p className="block px-4 py-2 text-gray-700">
-                  Zaloguj się, aby skorzystać z tej funkcji.
-                </p>
-              )}
+            <div className="absolute right-0 top-full mt flex flex-col bg-white border border-gray-200 shadow-lg rounded-md w-48 z-10">
+              <Link
+                to="/profile"
+                className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+              >
+                View Profile
+              </Link>
+              <Link
+                to="/logout"
+                className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+              >
+                Logout
+              </Link>
             </div>
           )}
         </div>

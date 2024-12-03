@@ -59,12 +59,14 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="mt-4 grow flex items-center justify-around">
+        <div className="mt-4 pt-10 grow flex items-center justify-around">
             <div className="mb-64">
                 <h1 className="text-3xl text-center mb-4">Rejestracja</h1>
                 <form className="max-w-md mx-auto" onSubmit={handleRegister}>
                     {error && <p className="text-red-500 text-center">{error}</p>}
                     {success && <p className="text-green-500 text-center">{success}</p>}
+                    
+                    {/* Username input */}
                     <input
                         type="text"
                         placeholder="Nazwa użytkownika"
@@ -72,13 +74,17 @@ export default function RegisterPage() {
                         onChange={(e) => setUsername(e.target.value)}
                         required
                     />
+
+                    {/* Email input */}
                     <input
-                        type="email"
+                        type="text"
                         placeholder="Email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
                     />
+
+                    {/* Password input */}
                     <input
                         type="password"
                         placeholder="Hasło"
@@ -86,6 +92,8 @@ export default function RegisterPage() {
                         onChange={(e) => setPassword(e.target.value)}
                         required
                     />
+
+                    {/* Repeat password input */}
                     <input
                         type="password"
                         placeholder="Powtórz hasło"
@@ -93,13 +101,13 @@ export default function RegisterPage() {
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         required
                     />
-                    <button className="primary">Zarejestruj się</button>
+
+                    {/* Register button */}
+                    <button type="submit" className="primary">Zarejestruj się</button>
 
                     <div className="text-center py-2 text-gray-500">
-                        Masz już konto?{" "}
-                        <Link className="underline text-black" to={"/login"}>
-                            Zaloguj się
-                        </Link>
+                        {/* Link to login page */}
+                        Masz już konto? <Link className="underline text-black" to={'/login'}>Zaloguj się</Link>
                     </div>
                 </form>
             </div>

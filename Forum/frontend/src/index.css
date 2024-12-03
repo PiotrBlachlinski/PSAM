@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 input[type="text"], input[type="password"]{
     @apply w-full border my-2 py-2 px-3 rounded-md;
 }
@@ -15,3 +16,4 @@ button.primary{
     background-color: #F5385D;
     @apply bg-primary p-2 w-full text-white rounded-2xl;
 }
+
