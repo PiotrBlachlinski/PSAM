@@ -23,6 +23,9 @@ public class Post {
     @Column(nullable = false)
     private String content;
 
+    @Column(nullable = false)
+    private String title; 
+
     @Lob
     @Column
     private byte[] image;
@@ -112,4 +115,13 @@ public class Post {
     public void setImage(byte[] image) {
         this.image = image;
     }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    
 }

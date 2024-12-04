@@ -38,11 +38,12 @@ public class PostService {
     }
 
     // Method to save a new post
-    public Post savePost(int userId, int categoryId, String content, MultipartFile image) throws IOException {
+    public Post savePost(int userId, int categoryId, String title, String content, MultipartFile image) throws IOException {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new IllegalArgumentException("Category not found"));
         Post newPost = new Post();
         newPost.setUser(user);
+        newPost.setTitle(title);
         newPost.setCategory(category);
         newPost.setContent(content);
         newPost.setCreatedAt(LocalDateTime.now());
@@ -54,7 +55,8 @@ public class PostService {
     }
 
     // Method to update a post
-    public Post updatePost(Post post, String content, MultipartFile image) throws IOException {
+    public Post updatePost(Post post, String title, String content, MultipartFile image) throws IOException {
+        post.setTitle(title);
         post.setContent(content);
         post.setUpdatedAt(LocalDateTime.now());
         if (image != null && !image.isEmpty()) {
@@ -66,5 +68,10 @@ public class PostService {
     // Method to delete a post by ID
     public void deletePostById(int postId) {
         postRepository.deleteById(postId);
+    }
+
+    public List<Post> getPostsByUserId(int userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return postRepository.findByUser(user);
     }
 }

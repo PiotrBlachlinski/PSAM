@@ -1,6 +1,8 @@
 package com.bd.forum.controllers;
 
+import com.bd.forum.entities.Post;
 import com.bd.forum.entities.User;
+import com.bd.forum.services.PostService;
 import com.bd.forum.services.UserService;
 
 import jakarta.servlet.http.HttpSession;
@@ -14,15 +16,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
     private UserService userService;
-    
-    public UserController(UserService userService) {
+    private PostService postService;
+
+    public UserController(UserService userService, PostService postService) {
         this.userService = userService;
+        this.postService = postService;
     }
 
     // Endpoint do pobierania wszystkich użytkowników
@@ -98,7 +101,6 @@ public class UserController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
-        
     }
 
     @GetMapping("/current")
@@ -120,10 +122,10 @@ public class UserController {
 
     @PostMapping("/update")
     public ResponseEntity<User> updateUser(@RequestParam("username") String username,
-                                        @RequestParam("description") String description,
-                                        @RequestParam(value = "profilePic", required = false) MultipartFile profilePic,
-                                        @RequestParam(value = "background", required = false) MultipartFile background,
-                                        HttpSession session) {
+                                           @RequestParam("description") String description,
+                                           @RequestParam(value = "profilePic", required = false) MultipartFile profilePic,
+                                           @RequestParam(value = "background", required = false) MultipartFile background,
+                                           HttpSession session) {
         User user = (User) session.getAttribute("user");
         if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -149,5 +151,16 @@ public class UserController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/current/posts")
+    public ResponseEntity<List<Post>> getCurrentUserPosts(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        List<Post> posts = postService.getPostsByUserId(user.getUserId());
+        return ResponseEntity.ok(posts);
     }
 }

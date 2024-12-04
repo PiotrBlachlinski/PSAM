@@ -15,8 +15,7 @@ public class SecurityConfig {
             .cors(Customizer.withDefaults()) // Włączenie CORS z domyślną konfiguracją
             .csrf(csrf -> csrf.disable()) // Wyłączenie CSRF (jeśli konieczne)
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/users/**").permitAll() 
-                .requestMatchers("/posts/**").permitAll()
+                .requestMatchers("/api/users/**", "/posts/**", "/categories/**").permitAll() 
                 .anyRequest().authenticated() // Wszystkie inne endpointy wymagają uwierzytelnienia
             );
         return http.build();
