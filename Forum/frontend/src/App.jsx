@@ -7,6 +7,7 @@ import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
 import AdminPage from './admin/AdminPage';
 import PostAdd from './pages/PostAdd';
+import PostEdit from './pages/PostEdit';
 import ModView from './mod/ModView';
 import ProtectedRoute from './ProtectedRoute';
 
@@ -20,6 +21,8 @@ function App() {
         <Route path='/register' element={<RegisterPage />} />
         <Route path='/profile' element={<ProfilePage />} />
         <Route path='/postAdd' element={<PostAdd />} />
+        <Route path="/postEdit/:postId" element={<PostEdit />} /> 
+
         
         {/* Trasy chronione */}
         <Route path='/modView' element={

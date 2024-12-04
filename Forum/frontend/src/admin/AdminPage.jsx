@@ -14,6 +14,7 @@ const UserProfile = () => {
   const [users, setUsers] = useState([]); // Lista użytkowników dla admina
   const [editedRoles, setEditedRoles] = useState({}); // Przechowuje tymczasowe zmiany ról
   const [password, setPassword] = useState(""); // Hasło do potwierdzenia zmiany roli na admina
+  const [posts, setPosts] = useState([]); // Lista postów zalogowanego użytkownika
   const navigate = useNavigate(); // Hook do przekierowania
 
   useEffect(() => {
@@ -32,9 +33,29 @@ const UserProfile = () => {
             profilePic: null,
             background: null,
           });
+          // Pobranie postów użytkownika
+          fetchUserPosts();
+        } else {
+          console.error("Nie udało się pobrać danych użytkownika. Status:", response.status);
         }
       } catch (error) {
         console.error("Błąd przy pobieraniu danych użytkownika:", error);
+      }
+    };
+
+    const fetchUserPosts = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/api/users/current/posts", {
+          credentials: "include",
+        });
+        if (response.ok) {
+          const postsData = await response.json();
+          setPosts(postsData);
+        } else {
+          console.error("Nie udało się pobrać postów użytkownika. Status:", response.status);
+        }
+      } catch (error) {
+        console.error("Błąd przy pobieraniu postów użytkownika:", error);
       }
     };
 
@@ -145,6 +166,24 @@ const UserProfile = () => {
       delete updated[userId];
       return updated;
     });
+  };
+
+  const handleDeletePost = async (postId) => {
+    try {
+      const response = await fetch(`http://localhost:8080/posts/${postId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        // Usunięcie posta z listy postów w stanie
+        setPosts((prevPosts) => prevPosts.filter((post) => post.postId !== postId));
+      } else {
+        console.error("Nie udało się usunąć wpisu. Status:", response.status);
+      }
+    } catch (error) {
+      console.error("Błąd przy usuwaniu wpisu:", error);
+    }
   };
 
   if (!user) {
@@ -347,6 +386,43 @@ const UserProfile = () => {
           </table>
         </div>
       )}
+
+      {/* Posty użytkownika */}
+      <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-5xl mt-6">
+        <h2 className="text-xl font-bold text-gray-800 mb-4">Ostatnie wpisy</h2>
+        {posts.length > 0 ? (
+          <ul>
+            {posts.map((post) => (
+              <li key={post.postId} className="mb-4 flex justify-between items-start">
+                <div className="flex flex-col">
+                  <h3 className="text-lg font-semibold text-blue-600">{post.title || "Tytuł postu"}</h3>
+                  <p className="text-sm text-gray-500">Utworzono {post.createdAt}</p>
+                  <h1 className="text-lg font-semibold text-gray-800">{post.content}</h1>
+                  <div className="flex items-center gap-2 mt-2">
+                    <span>Polubienia: {post.likes}</span>
+                    <span>Niepolubienia: {post.dislikes}</span>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2">
+                  {/* Przycisk "Edytuj" przekierowuje do komponentu PostEdit */}
+                  <Link to={`/postEdit/${post.postId}`} className="text-blue-500">
+                    Edytuj
+                  </Link>
+                  <button
+                    className="text-red-500"
+                    onClick={() => handleDeletePost(post.postId)}
+                  >
+                    Usuń
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-gray-500">Nie udostępniono żadnych wpisów.</p>
+        )}
+      </div>
+
     </div>
   );
 };

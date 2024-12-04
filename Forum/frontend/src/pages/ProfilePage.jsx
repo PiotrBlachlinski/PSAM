@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import Header from "../Header";
 
 const UserProfile = () => {
   const [user, setUser] = useState(null);
+  const [posts, setPosts] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
@@ -14,21 +17,44 @@ const UserProfile = () => {
     // Pobranie danych użytkownika
     const fetchUserData = async () => {
       try {
+        console.log("Pobieranie danych użytkownika...");
         const response = await fetch("http://localhost:8080/api/users/current", {
           credentials: "include",
         });
         if (response.ok) {
           const userData = await response.json();
+          console.log("Dane użytkownika pobrane pomyślnie:", userData);
           setUser(userData);
           setFormData({
             username: userData.username,
             description: userData.description || "",
-            profilePic: null,
-            background: null,
+            profilePic: userData.profilePic,
+            background: userData.background,
           });
+
+          // Pobranie postów użytkownika
+          fetchUserPosts();
+        } else {
+          console.error("Nie udało się pobrać danych użytkownika. Status:", response.status);
         }
       } catch (error) {
         console.error("Błąd przy pobieraniu danych użytkownika:", error);
+      }
+    };
+
+    const fetchUserPosts = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/api/users/current/posts", {
+          credentials: "include",
+        });
+        if (response.ok) {
+          const postsData = await response.json();
+          setPosts(postsData);
+        } else {
+          console.error("Nie udało się pobrać postów użytkownika. Status:", response.status);
+        }
+      } catch (error) {
+        console.error("Błąd przy pobieraniu postów użytkownika:", error);
       }
     };
 
@@ -69,6 +95,25 @@ const UserProfile = () => {
       }
     } catch (error) {
       console.error("Błąd przy aktualizacji danych użytkownika:", error);
+    }
+  };
+
+  // Funkcja do usuwania postów
+  const handleDeletePost = async (postId) => {
+    try {
+      const response = await fetch(`http://localhost:8080/posts/${postId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        // Usunięcie posta z listy postów w stanie
+        setPosts((prevPosts) => prevPosts.filter((post) => post.postId !== postId));
+      } else {
+        console.error("Nie udało się usunąć wpisu. Status:", response.status);
+      }
+    } catch (error) {
+      console.error("Błąd przy usuwaniu wpisu:", error);
     }
   };
 
@@ -187,6 +232,41 @@ const UserProfile = () => {
           </div>
         </form>
       )}
+      {/* Posty użytkownika */}
+      <div className="bg-white shadow-md rounded-lg p-6 w-full max-w-5xl mt-6">
+        <h2 className="text-xl font-bold text-gray-800 mb-4">Ostatnie wpisy</h2>
+        {posts.length > 0 ? (
+          <ul>
+            {posts.map((post) => (
+              <li key={post.postId} className="mb-4 flex justify-between items-start">
+                <div className="flex flex-col">
+                  <h3 className="text-lg font-semibold text-blue-600">{post.title || "Tytuł postu"}</h3>
+                  <p className="text-sm text-gray-500">Utworzono {post.createdAt}</p>
+                  <h1 className="text-lg font-semibold text-gray-800">{post.content}</h1>
+                  <div className="flex items-center gap-2 mt-2">
+                    <span>Polubienia: {post.likes}</span>
+                    <span>Niepolubienia: {post.dislikes}</span>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2">
+                  {/* Przycisk "Edytuj" przekierowuje do komponentu PostEdit */}
+                  <Link to={`/postEdit/${post.postId}`} className="text-blue-500">
+                    Edytuj
+                  </Link>
+                  <button
+                    className="text-red-500"
+                    onClick={() => handleDeletePost(post.postId)}
+                  >
+                    Usuń
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-gray-500">Nie udostępniono żadnych wpisów.</p>
+        )}
+      </div>
     </div>
   );
 };

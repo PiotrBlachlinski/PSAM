@@ -177,7 +177,7 @@ export default function Header() {
 
       {/* Profile Section */}
       <div
-        className={`flex items-center gap-2 border border-grey-300 rounded-full py-2 px-4 shadow-md shadow-gray-300 slide-in ${
+        className={`flex gap-2 border border-grey-300 rounded-full py-2 px-4 shadow-md shadow-gray-300 slide-in ${
           profileAnimate ? 'visible' : ''
         }`}
       >
